@@ -5,6 +5,6 @@ WORKDIR /conversai-docker-backend
 # COPY requirements.txt .
 COPY ./backend ./backend
 
-RUN pip install -r requirements.txt
+RUN pip install -r ./backend/requirements.txt
 
 CMD ["python", "./main.py"]
