@@ -7,4 +7,6 @@ COPY ./backend ./backend
 
 RUN pip install -r ./backend/requirements.txt
 
+EXPOSE 8000
+
 CMD ["python", "./main.py"]
