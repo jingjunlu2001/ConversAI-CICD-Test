@@ -3,8 +3,7 @@ name: Docker Image Run
 on:
   workflow_run:
     workflows: [ "Docker Image Deploy" ]
-    types:
-      - Completed
+    types: [completed]
 
 jobs:
 
