@@ -1,0 +1,26 @@
+name: Docker Image Run
+
+on:
+  workflow_run:
+    workflows: [ "Docker Image Deploy" ]
+    types:
+      - Completed
+
+jobs:
+
+  build:
+
+    runs-on: self-hosted
+
+    steps:
+      # Step 1: Pull Docker Image
+      - name: Pull Docker Image
+        run: sudo docker pull ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+
+      # Step 2: Delete Old Docker Container
+      - name: Delete Old Docker Container
+        run: sudo docker rm -f python-app-container || true
+
+      # Step 3: Run Docker Container
+      - name: Run Docker Container
+        run: sudo docker run -d -p 8000:8000 --name python-app-container ${{ secrets.DOCKER_USERNAME }}/python-app
