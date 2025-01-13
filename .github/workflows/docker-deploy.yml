@@ -10,7 +10,7 @@ jobs:
 
   deploy:
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
 
     steps:
       # Step 1: Checkout code
@@ -33,3 +33,16 @@ jobs:
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+
+
+      - name: Deploy to EC2 Instance
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            docker stop python-app || true
+            docker rm python-app || true
+            docker pull ${{ secrets.DOCKER_USERNAME }}/python-app:latest
+            docker run -d -p 8000:8000 --name python-app ${{ secrets.DOCKER_USERNAME }}/python-app
