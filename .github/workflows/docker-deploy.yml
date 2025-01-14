@@ -45,4 +45,4 @@ jobs:
             docker stop python-app-container || true
             docker rm python-app-container || true
             docker pull ${{ secrets.DOCKER_USERNAME }}/python-app:latest
-            docker run -d -p 8000:8000 --name python-app-container ${{ secrets.DOCKER_USERNAME }}/python-app
+            docker run -d -p 8080:8080 --name python-app-container ${{ secrets.DOCKER_USERNAME }}/python-app
