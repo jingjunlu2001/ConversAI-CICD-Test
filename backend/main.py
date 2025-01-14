@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/")
 async def read_root():
-    return "ConversAI Backend Testing"
+    return "ConversAI Backend Testing."
 
 
 @app.get("/health")
