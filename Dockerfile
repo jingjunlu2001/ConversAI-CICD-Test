@@ -10,3 +10,4 @@ RUN pip install -r ./backend/requirements.txt
 EXPOSE 8000
 
 CMD ["python", "./backend/main.py"]
+CMD ["python", "./backend/server.py"]
