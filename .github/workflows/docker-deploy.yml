@@ -29,17 +29,12 @@ jobs:
         run: |
           docker build -t ${{ secrets.DOCKER_USERNAME }}/python-app:latest .
 
-      # Step 4: Remove Existing Docker images
-      - name: Remove Docker image
-        run: |
-          docker rmi $(docker images -q)
-
-      # Step 5: Push Docker image to Docker Hub
+      # Step 4: Push Docker image to Docker Hub
       - name: Push Docker image
         run: |
           docker push ${{ secrets.DOCKER_USERNAME }}/python-app:latest
 
-      # Step 6: Pull Docker image from Docker Hub and Run
+      # Step 5: Pull Docker image from Docker Hub and Run
       - name: Deploy to EC2 Instance
         uses: appleboy/ssh-action@master
         with:
