@@ -45,87 +45,93 @@ async def extract_chat_messages(
     file_path: str = Form(None)
 ):
     try:
-        # 图像处理逻辑
-        image = None
+        # # 图像处理逻辑
+        # image = None
 
-        # Process file upload
-        if file:
-            contents = await file.read()
-            if not contents:
-                raise HTTPException(status_code=400, detail="Uploaded file is empty.")
-            image = Image.open(io.BytesIO(contents)).convert("RGB")
+        # # Process file upload
+        # if file:
+        #     contents = await file.read()
+        #     if not contents:
+        #         raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+        #     image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-        # Process base64-encoded image
-        elif base64_image:
-            try:
-                base64_data = base64.b64decode(base64_image)
-                image = Image.open(io.BytesIO(base64_data)).convert("RGB")
-            except Exception:
-                raise HTTPException(status_code=400, detail="Invalid base64 image data.")
+        # # Process base64-encoded image
+        # elif base64_image:
+        #     try:
+        #         base64_data = base64.b64decode(base64_image)
+        #         image = Image.open(io.BytesIO(base64_data)).convert("RGB")
+        #     except Exception:
+        #         raise HTTPException(status_code=400, detail="Invalid base64 image data.")
 
-        # Process file path
-        elif file_path:
-            if not os.path.isfile(file_path):
-                raise HTTPException(status_code=400, detail="File path does not exist.")
-            image = Image.open(file_path).convert("RGB")
+        # # Process file path
+        # elif file_path:
+        #     if not os.path.isfile(file_path):
+        #         raise HTTPException(status_code=400, detail="File path does not exist.")
+        #     image = Image.open(file_path).convert("RGB")
 
-        # 如果未提供任何图像数据
-        if image is None:
-            raise HTTPException(status_code=400, detail="No valid image data provided.")
+        # # 如果未提供任何图像数据
+        # if image is None:
+        #     raise HTTPException(status_code=400, detail="No valid image data provided.")
 
-        # 转换为 NumPy 数组
-        image_np = np.array(image)
+        # # 转换为 NumPy 数组
+        # image_np = np.array(image)
 
-        # OCR 识别
-        result = ocr.ocr(image_np)
+        # # OCR 识别
+        # result = ocr.ocr(image_np)
 
-        # 初始化分组逻辑
-        messages = []
-        current_message = {"text": "", "sender": None}
-        prev_bottom = None
-        prev_left = None
+        # # 初始化分组逻辑
+        # messages = []
+        # current_message = {"text": "", "sender": None}
+        # prev_bottom = None
+        # prev_left = None
 
-        for line in result[0]:
-            text = line[1][0]
-            confidence = line[1][1]
-            box = line[0]
+        # for line in result[0]:
+        #     text = line[1][0]
+        #     confidence = line[1][1]
+        #     box = line[0]
 
-            # 获取文字块的位置信息
-            top = min(box[0][1], box[1][1])
-            bottom = max(box[2][1], box[3][1])
-            left = min(box[0][0], box[3][0])
-            right = max(box[1][0], box[2][0])
-            center_x = (left + right) / 2  # 中心点
+        #     # 获取文字块的位置信息
+        #     top = min(box[0][1], box[1][1])
+        #     bottom = max(box[2][1], box[3][1])
+        #     left = min(box[0][0], box[3][0])
+        #     right = max(box[1][0], box[2][0])
+        #     center_x = (left + right) / 2  # 中心点
 
-            # 判断是否属于同一个气泡
-            if prev_bottom is not None and (top - prev_bottom > 20 or abs(left - prev_left) > 50):
-                # 保存上一条消息
-                messages.append(current_message)
-                current_message = {"text": "", "sender": None}
+        #     # 判断是否属于同一个气泡
+        #     if prev_bottom is not None and (top - prev_bottom > 20 or abs(left - prev_left) > 50):
+        #         # 保存上一条消息
+        #         messages.append(current_message)
+        #         current_message = {"text": "", "sender": None}
 
-            # 根据水平位置判断发信人或收信人
-            sender = "friend" if center_x < image_np.shape[1] * 0.5 else "me"
-            if current_message["sender"] is None:
-                current_message["sender"] = sender
+        #     # 根据水平位置判断发信人或收信人
+        #     sender = "friend" if center_x < image_np.shape[1] * 0.5 else "me"
+        #     if current_message["sender"] is None:
+        #         current_message["sender"] = sender
 
-            # 累加当前文字块内容
-            current_message["text"] += text + " "
-            prev_bottom = bottom
-            prev_left = left
+        #     # 累加当前文字块内容
+        #     current_message["text"] += text + " "
+        #     prev_bottom = bottom
+        #     prev_left = left
 
-        # 保存最后一条消息
-        if current_message["text"].strip():
-            messages.append(current_message)
+        # # 保存最后一条消息
+        # if current_message["text"].strip():
+        #     messages.append(current_message)
 
-        # 保存为 JSON 文件
-        json_file_path = os.path.join(SAVE_DIR, "chat_result.json")
-        with open(json_file_path, "w", encoding="utf-8") as json_file:
-            json.dump({"success": True, "messages": messages}, json_file, ensure_ascii=False, indent=4)
+        # # 保存为 JSON 文件
+        # json_file_path = os.path.join(SAVE_DIR, "chat_result.json")
+        # with open(json_file_path, "w", encoding="utf-8") as json_file:
+        #     json.dump({"success": True, "messages": messages}, json_file, ensure_ascii=False, indent=4)
             
+        # return {
+        #     "success": True,
+        #     "messages": messages,
+        #     "json_path": json_file_path
+        # }
+
         return {
             "success": True,
-            "messages": messages,
-            "json_path": json_file_path
+            "messages": "Testing",
+            "json_path": "/None"
         }
         
     except Exception as e:
