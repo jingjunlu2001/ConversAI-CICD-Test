@@ -14,6 +14,15 @@ app = FastAPI()
 
 ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
+# 文件保存路径
+SAVE_DIR = "./saved_results"
+os.makedirs(SAVE_DIR, exist_ok=True)  # 确保保存目录存在
+
+
+class OCRRequest(BaseModel):
+    base64_image: str = None  # Base64 编码的图像数据
+    file_path: str = None  # 本地文件路径
+
 @app.get("/")
 async def read_root():
     return "ConversAI Backend Testing."
@@ -27,16 +36,6 @@ async def health():
 @app.get("/healthy")
 async def healthy():
     return "Healthy"
-
-
-# 文件保存路径
-SAVE_DIR = "./saved_results"
-os.makedirs(SAVE_DIR, exist_ok=True)  # 确保保存目录存在
-
-
-class OCRRequest(BaseModel):
-    base64_image: str = None  # Base64 编码的图像数据
-    file_path: str = None  # 本地文件路径
 
 
 @app.post("/ocr/")
