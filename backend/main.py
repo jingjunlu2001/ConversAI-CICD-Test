@@ -5,23 +5,23 @@ import base64
 import os
 from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Depends
 from pydantic import BaseModel
-from paddleocr import PaddleOCR
-from PIL import Image
-import numpy as np
-import io
+# from paddleocr import PaddleOCR
+# from PIL import Image
+# import numpy as np
+# import io
 
 app = FastAPI()
 
-ocr = PaddleOCR(use_angle_cls=True, lang='en')
+# ocr = PaddleOCR(use_angle_cls=True, lang='en')
 
-# 文件保存路径
-SAVE_DIR = "./saved_results"
-os.makedirs(SAVE_DIR, exist_ok=True)  # 确保保存目录存在
+# # 文件保存路径
+# SAVE_DIR = "./saved_results"
+# os.makedirs(SAVE_DIR, exist_ok=True)  # 确保保存目录存在
 
 
-class OCRRequest(BaseModel):
-    base64_image: str = None  # Base64 编码的图像数据
-    file_path: str = None  # 本地文件路径
+# class OCRRequest(BaseModel):
+#     base64_image: str = None  # Base64 编码的图像数据
+#     file_path: str = None  # 本地文件路径
 
 @app.get("/")
 async def read_root():
