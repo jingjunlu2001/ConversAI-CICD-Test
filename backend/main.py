@@ -3,7 +3,7 @@ import uvicorn
 import json
 import base64
 import os
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, UploadFile, File, HTTPException, Form, Depends
 from pydantic import BaseModel
 from paddleocr import PaddleOCR
 from PIL import Image
@@ -40,33 +40,34 @@ async def healthy():
 
 @app.post("/ocr/")
 async def extract_chat_messages(
-    file: UploadFile = File(None),  # 文件上传为可选项
-    request: OCRRequest = None,  # 接受 JSON 数据
+    file: UploadFile = File(None),  
+    base64_image: str = Form(None),
+    file_path: str = Form(None)
 ):
     try:
         # 图像处理逻辑
         image = None
 
-        # 处理文件上传
+        # Process file upload
         if file:
             contents = await file.read()
             if not contents:
                 raise HTTPException(status_code=400, detail="Uploaded file is empty.")
             image = Image.open(io.BytesIO(contents)).convert("RGB")
 
-        # 处理 Base64 图像数据
-        elif request and request.base64_image:
+        # Process base64-encoded image
+        elif base64_image:
             try:
-                base64_data = base64.b64decode(request.base64_image)
+                base64_data = base64.b64decode(base64_image)
                 image = Image.open(io.BytesIO(base64_data)).convert("RGB")
             except Exception:
                 raise HTTPException(status_code=400, detail="Invalid base64 image data.")
 
-        # **处理文件路径**
-        elif request and request.file_path:
-            if not os.path.isfile(request.file_path):
+        # Process file path
+        elif file_path:
+            if not os.path.isfile(file_path):
                 raise HTTPException(status_code=400, detail="File path does not exist.")
-            image = Image.open(request.file_path).convert("RGB")
+            image = Image.open(file_path).convert("RGB")
 
         # 如果未提供任何图像数据
         if image is None:
