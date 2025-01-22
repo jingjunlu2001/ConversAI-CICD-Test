@@ -38,12 +38,6 @@ async def healthy():
     return "Healthy"
 
 
-@app.post("/items/")
-async def create_item(item: Item):
-    # The item parameter will automatically be parsed from the request body using the Item Pydantic model
-    return {"name": item.name, "description": item.description, "price": item.price, "tax": item.tax}
-
-
 # Get all available methods and endpoints
 @app.get("/available-methods/")
 async def available_methods():
