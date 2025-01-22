@@ -25,7 +25,7 @@ app = FastAPI()
 
 @app.get("/")
 async def read_root():
-    return "ConversAI Backend Testing."
+    return "ConversAI Backend Testing"
 
 
 @app.get("/health")
@@ -37,11 +37,18 @@ async def health():
 async def healthy():
     return "Healthy"
 
+
 @app.post("/items/")
 async def create_item(item: Item):
     # The item parameter will automatically be parsed from the request body using the Item Pydantic model
     return {"name": item.name, "description": item.description, "price": item.price, "tax": item.tax}
 
+
+# Get all available methods and endpoints
+@app.get("/available-methods/")
+async def available_methods():
+    methods = {route.path: list(route.methods) for route in app.routes}
+    return methods
 
 # @app.post("/ocr/")
 # async def extract_chat_messages(
