@@ -25,7 +25,7 @@ os.makedirs(SAVE_DIR, exist_ok=True)  # 确保保存目录存在
 
 @app.get("/")
 async def read_root():
-    return "ConversAI Backend Testing!"
+    return "ConversAI Backend Testing"
 
 
 @app.get("/health")
