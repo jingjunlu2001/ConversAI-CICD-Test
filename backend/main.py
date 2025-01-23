@@ -73,7 +73,9 @@ async def extract_chat_messages(
         elif file_path:
             if not os.path.isfile(file_path):
                 raise HTTPException(status_code=400, detail="File path does not exist.")
+            print(file_path)
             image = Image.open(file_path).convert("RGB")
+            print(image.size)
 
         # 如果未提供任何图像数据
         if image is None:
