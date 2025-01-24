@@ -13,7 +13,7 @@ import io
 app = FastAPI()
 
 # ocr = PaddleOCR(use_angle_cls=True, lang='en')
-ocr = PaddleOCR(det_model_dir='en_PP-OCRv4_mobile')
+ocr = PaddleOCR(det_model_dir='en_PP-OCRv4_mobile', lang="en", use_gpu=False)
 
 # 文件保存路径
 SAVE_DIR = "./saved_results"
